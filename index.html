@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AquaSense AI | Rainwater Intelligence</title>
+<style>
+:root{--bg:#eaf5fb;--surf:#fff;--ink:#16303f;--mut:#5a6f7c;--pri:#0077b6;--nav:#023e8a;--line:#cfe3ee;--ok:#2e8b57;--warn:#c27c00;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1d28;--surf:#12303f;--ink:#e4f1f8;--mut:#93b1c1;--pri:#4cb3e6;--nav:#0a2a5c;--line:#24516a;--ok:#5fd08d;--warn:#f0b43c;--bad:#ff7a6b}}
+:root[data-theme="dark"]{--bg:#0c1d28;--surf:#12303f;--ink:#e4f1f8;--mut:#93b1c1;--pri:#4cb3e6;--nav:#0a2a5c;--line:#24516a;--ok:#5fd08d;--warn:#f0b43c;--bad:#ff7a6b}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Segoe UI",Tahoma,sans-serif}
+header{background:linear-gradient(120deg,#0077b6,#00a8d6);color:#fff;text-align:center;padding:24px 12px}
+header h1{margin:0;font-size:28px}header p{margin:6px 0 0}
+nav{background:var(--nav);display:flex;flex-wrap:wrap;justify-content:center;gap:6px 26px;padding:13px 8px}
+nav a{color:#fff;text-decoration:none;padding:3px 2px;border-bottom:2px solid transparent}nav a.on{border-color:#fff}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+main{max-width:980px;margin:20px auto;padding:0 12px}
+section{display:none}section.on{display:block}
+.chatlog{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:8px}.chatmsg{padding:10px 12px;border-radius:12px;background:var(--bg);max-width:95%;white-space:pre-wrap}.chatmsg.user{align-self:flex-end;background:rgba(0,119,182,.15)}.chatmsg.bot{align-self:flex-start}.maplinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.maplinks a{color:var(--pri);font-weight:600}.floating-help{position:fixed;right:16px;bottom:16px;z-index:20;box-shadow:0 4px 16px #0003;border-radius:999px}.tiny{font-size:12px;color:var(--mut)}
+.card{background:var(--surf);border-radius:16px;padding:20px;box-shadow:0 4px 14px rgba(0,60,100,.12);margin-bottom:16px}
+h2{color:var(--pri);margin:0 0 8px}h3{margin:0 0 6px;font-size:16px;color:var(--pri)}.c{text-align:center}.note{font-size:13px;color:var(--mut)}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:8px;padding:10px 20px;font:inherit;text-decoration:none;display:inline-block;margin:4px}
+.btn.alt{background:transparent;color:var(--pri);border:1px solid var(--pri)}
+.form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin:12px 0}
+label{font-size:14px;color:var(--mut);display:block}
+input,select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:12px 0}
+.stat{background:var(--bg);border-radius:10px;padding:12px;text-align:center}.stat b{display:block;font-size:22px;color:var(--pri)}.stat span{font-size:13px;color:var(--mut)}
+.badge{display:inline-block;font-size:12px;border:1px solid var(--warn);color:var(--warn);border-radius:99px;padding:1px 9px;margin-left:6px;vertical-align:middle}
+.badge.m{border-color:var(--ok);color:var(--ok)}
+.box{background:var(--bg);border-radius:10px;padding:12px;margin-top:12px}.box p,.box ul{margin:4px 0}.box ul{padding-left:20px}
+.grid2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+td:nth-child(n+2){text-align:right}tr.tot td{font-weight:700;color:var(--pri)}tr.hl td{background:rgba(0,119,182,.12)}
+td.wr{white-space:normal;text-align:left!important;color:var(--mut)}
+svg{width:100%;height:auto;display:block;min-width:560px}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:14px;border:2px solid;margin:2px 4px 2px 0}.tag.y{border-color:var(--ok)}.tag.n{border-color:var(--bad)}
+.ubar{height:22px;background:var(--warn);border-radius:11px;overflow:hidden;margin:8px 0}.ubar i{display:block;height:100%;background:var(--pri)}
+footer{text-align:center;color:var(--mut);padding:20px 10px}
+
+/* AquaSense AI final visual polish */
+:root{--bg:#f3f8f7;--surf:#ffffff;--ink:#153b3a;--mut:#627a78;--pri:#087f78;--nav:#103c3a;--line:#d9e8e4;--ok:#16866b;--warn:#b87918;--bad:#c24e4e;--shadow:0 16px 42px rgba(21,73,66,.08)}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.65;background:radial-gradient(ellipse at 85% 0%,rgba(114,206,187,.15),transparent 34%),var(--bg);color:var(--ink)}
+.site-header{min-height:116px;display:flex;align-items:center;justify-content:center;gap:15px;text-align:left;padding:24px clamp(16px,4vw,56px);background:linear-gradient(115deg,#103c3a 0%,#126f67 58%,#1c9386 100%);position:relative;overflow:hidden}
+.site-header:after{content:"";position:absolute;width:360px;height:360px;border:1px solid #ffffff1b;border-radius:50%;right:7%;top:-250px;box-shadow:0 0 0 36px #ffffff08,0 0 0 72px #ffffff05;pointer-events:none}
+.brand-mark{width:52px;height:52px;display:grid;place-items:center;border:1px solid #ffffff4a;background:#ffffff15;border-radius:17px;font-weight:850;font-size:26px;letter-spacing:-2px;flex:none;z-index:1}.brand-mark span{font-size:13px;margin-left:-5px;align-self:start;margin-top:8px}
+.brand-copy{z-index:1}.brand-copy .eyebrow,.eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;margin:0 0 4px;color:#a9e9d9}.brand-copy h1{font-size:clamp(25px,3vw,34px);letter-spacing:-1.2px;line-height:1.1;margin:0;color:white}.brand-copy h1 span{color:#8ee5d2}.brand-copy p:last-child{margin:6px 0 0;font-size:13px;color:#d0ece6}.header-pill{position:absolute;right:clamp(16px,4vw,56px);z-index:1;border:1px solid #ffffff40;background:#ffffff12;color:#e6faf5;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:650;display:flex;align-items:center;gap:7px}
+.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#80e1bd;box-shadow:0 0 0 4px #80e1bd20;flex:none}
+nav{position:sticky;top:0;z-index:30;justify-content:flex-start;gap:5px;padding:10px max(14px,calc((100vw - 1120px)/2));background:rgba(13,54,52,.96);backdrop-filter:blur(16px);box-shadow:0 7px 20px #0d36321c;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin}
+nav a{white-space:nowrap;padding:7px 12px;border:1px solid transparent;border-radius:9px;font-size:12px;font-weight:650;color:#d8efeb;transition:background .2s,color .2s,border .2s}nav a:hover,nav a.on{background:#ffffff17;border-color:#ffffff25;color:#fff;border-bottom-color:#91e5d4}
+main{max-width:1120px;margin:30px auto 48px;padding:0 20px;min-height:62vh}section{scroll-margin-top:80px}.card{border:1px solid rgba(191,219,211,.72);border-radius:20px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow);margin-bottom:20px;transition:box-shadow .2s,border-color .2s}.card:hover{box-shadow:0 18px 48px rgba(21,73,66,.105)}h2{color:var(--ink);font-size:clamp(22px,2.6vw,29px);letter-spacing:-.7px;line-height:1.25;margin:0 0 12px}h3{color:#087f78;font-size:16px;letter-spacing:-.15px}.note,.tiny{color:var(--mut)}
+.hero-panel{position:relative;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;overflow:hidden;border-radius:26px;padding:clamp(25px,5vw,54px);background:linear-gradient(120deg,#123e3b,#116a61 62%,#168e7d);color:#fff;box-shadow:0 22px 55px #164f4624;margin-bottom:18px;isolation:isolate}.hero-panel:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 77% 50%,#83e4ce24,transparent 28%),linear-gradient(135deg,transparent 50%,#ffffff08);z-index:-1}.hero-copy{align-self:center;max-width:610px}.hero-copy .eyebrow{color:#9be6d6}.hero-copy h2{font-size:clamp(30px,4vw,48px);letter-spacing:-1.8px;line-height:1.08;color:#fff;margin:10px 0 16px;max-width:610px}.hero-copy>p:not(.eyebrow):not(.hero-footnote){color:#d4eeea;max-width:590px;font-size:15px}.hero-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.hero-panel .btn{margin:0;background:#a8efdc;color:#103f39;border:1px solid #a8efdc;font-weight:800;border-radius:11px;padding:12px 17px}.hero-panel .btn.alt{background:#ffffff0c;color:#fff;border-color:#ffffff50}.hero-footnote{display:flex;align-items:center;gap:9px;color:#b8ddd6;font-size:11px;margin:22px 0 0}.hero-visual{position:relative;min-height:260px;display:grid;place-items:center}.orb{position:absolute;border-radius:50%;border:1px solid #a7eddd42}.orb-one{width:250px;height:250px;box-shadow:0 0 0 20px #b6f5e80a,0 0 0 45px #b6f5e806}.orb-two{width:170px;height:170px;background:linear-gradient(140deg,#b7f8e62b,#d2fff107);box-shadow:inset 0 0 30px #c7fff41c}.water-drop{font-size:78px;filter:drop-shadow(0 14px 18px #082c2944);z-index:1;transform:translateY(-2px)}.mini-card{position:absolute;z-index:2;display:flex;flex-direction:column;gap:3px;background:#f6fffc;color:#153f3a;padding:12px 15px;border-radius:13px;box-shadow:0 12px 30px #092c2935;min-width:150px}.mini-card span{font-size:9px;letter-spacing:1.2px;font-weight:800;color:#56817a}.mini-card b{font-size:12px}.mini-top{top:23px;right:0}.mini-bottom{bottom:18px;left:0}.rain-line{position:absolute;width:2px;height:20px;border-radius:3px;background:#b7f5e6;opacity:.7;transform:rotate(25deg)}.rain-a{left:12%;top:35%}.rain-b{right:13%;bottom:30%;height:26px}.rain-c{right:28%;top:10%;height:14px}
+.quick-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 24px}.quick-strip>div{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line);padding:14px;border-radius:15px;box-shadow:0 8px 20px #164f4608}.quick-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#e6f5f0;color:#087f78;font-size:21px;flex:none}.quick-strip b,.quick-strip small{display:block}.quick-strip b{font-size:12px}.quick-strip small{font-size:10px;color:var(--mut);margin-top:1px}.home-intro{text-align:center;padding:30px}.home-intro p{max-width:720px;margin:0 auto 18px;color:var(--mut)}
+.btn{background:var(--pri);border:1px solid var(--pri);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:750;letter-spacing:.05px;box-shadow:0 5px 12px #087f781a;transition:transform .15s,box-shadow .15s,background .15s}.btn:hover{transform:translateY(-1px);box-shadow:0 9px 18px #087f7824;background:#066b65}.btn.alt{box-shadow:none;border-color:#b6d9d2;background:#f8fcfb;color:#087f78}.btn.alt:hover{background:#e9f7f3}.form{gap:14px}.form>div{min-width:0}label{font-size:12px;font-weight:700;margin-bottom:5px;color:#56716e}input,select{padding:11px 12px;border:1px solid #cbded9;border-radius:10px;background:#fbfdfc;font-size:14px;transition:border-color .15s,box-shadow .15s}input:hover,select:hover{border-color:#83bcb0}input:focus,select:focus{border-color:#087f78;box-shadow:0 0 0 3px #087f7818;outline:none}.stats{gap:12px}.stat{border:1px solid #dcece7;border-radius:14px;padding:17px 12px;background:linear-gradient(145deg,#f8fcfa,#edf7f3);text-align:left}.stat b{font-size:clamp(20px,2.5vw,27px);color:#087f78;letter-spacing:-.8px}.stat span{font-size:11px;line-height:1.4;display:block;margin-top:5px}.badge{border:1px solid #d7a65c;color:#98600b;background:#fff8e9;padding:3px 9px;font-size:10px;font-weight:800;letter-spacing:.3px}.badge.m{border-color:#9bcdb7;color:#16704f;background:#eef9f2}.box{border:1px solid #deebe7;border-radius:13px;padding:15px;background:#f6fbf9}.chatlog{max-height:380px;min-height:180px;padding:14px;background:#f5faf8;border:1px solid var(--line);border-radius:15px}.chatmsg{padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.55}.chatmsg.bot{background:#fff;border:1px solid #e0ece8;box-shadow:0 3px 8px #153b3a08}.chatmsg.user{background:#dff4ed;color:#174b43;border:1px solid #c2e7dc}.maplinks{gap:8px}.maplinks a{display:inline-block;background:#eef8f4;padding:7px 10px;border:1px solid #d3e9e1;border-radius:9px;text-decoration:none;font-size:12px}.maplinks a:hover{text-decoration:underline}table{font-size:12px}td,th{padding:10px 11px;border-bottom:1px solid #e3eeea}th{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#55716c;background:#f4faf7}tr:hover td{background:#f8fcfa}svg{min-width:500px}footer{font-size:12px;border-top:1px solid var(--line);background:#eef6f3;padding:24px 15px}.floating-help{border-radius:999px;bottom:20px;right:20px;box-shadow:0 12px 28px #0b3b3540}.tag{font-size:11px;font-weight:750;border-width:1px;padding:4px 10px}
+@media(max-width:780px){.site-header{justify-content:flex-start;padding-right:16px}.header-pill{display:none}.hero-panel{grid-template-columns:1fr;padding:28px 23px}.hero-visual{min-height:210px;max-width:440px;width:100%;margin:0 auto}.orb-one{width:205px;height:205px}.orb-two{width:140px;height:140px}.water-drop{font-size:65px}.mini-top{right:2px;top:10px}.mini-bottom{left:2px;bottom:8px}.quick-strip{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:0 13px;margin-top:18px}.card{padding:18px;border-radius:16px}nav{gap:3px;padding:8px 10px}nav a{padding:7px 10px;font-size:11px}}
+@media(max-width:420px){.brand-mark{width:43px;height:43px;border-radius:14px}.brand-copy h1{font-size:25px}.brand-copy p:last-child{font-size:11px}.hero-copy h2{font-size:32px}.quick-strip{gap:7px}.quick-strip>div{padding:10px 8px;gap:7px}.quick-icon{width:30px;height:30px;font-size:17px}.quick-strip b{font-size:11px}.quick-strip small{font-size:9px}.hero-actions .btn{padding:10px 12px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+</style></head><body>
+<header class="site-header"><div class="brand-mark" aria-hidden="true">A<span>💧</span></div><div class="brand-copy"><p class="eyebrow">SMART WATER • RESILIENT CITIES</p><h1>AquaSense <span>AI</span></h1><p>Rainwater intelligence for homes, campuses and cities</p></div><div class="header-pill"><span class="pulse-dot"></span> Decision-support prototype</div></header>
+<nav id="nav"><a href="#home">Home</a><a href="#calculator">Rainwater Calculator</a><a href="#planner">Rain Planner</a><a href="#dashboard">Dashboard</a><a href="#urban">Urban Management</a><a href="#recommendations">Recommendations</a><a href="#ai">AI Assistant</a><a href="#locations">Locations</a><a href="#assumptions">Assumptions</a></nav>
+<main>
+<section id="home"><div class="hero-panel"><div class="hero-copy"><p class="eyebrow">PLAN BETTER. WASTE LESS.</p><h2>Turn every drop into a smarter decision.</h2><p>Estimate rooftop harvest potential, test tank capacity, plan for a rainfall scenario and explore ward-level priorities—all in one place.</p><div class="hero-actions"><a class="btn" href="#calculator">Explore calculator <span aria-hidden="true">→</span></a><a class="btn alt" href="#dashboard">View dashboard</a></div><p class="hero-footnote"><span class="pulse-dot"></span> Transparent estimates · Editable inputs · AI-assisted explanations</p></div><div class="hero-visual" aria-label="Rainwater collection illustration" role="img"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="water-drop">💧</div><div class="mini-card mini-top"><span>ROOFTOP HARVEST</span><b>Measure potential</b></div><div class="mini-card mini-bottom"><span>URBAN RESILIENCE</span><b>Prioritise action</b></div><div class="rain-line rain-a"></div><div class="rain-line rain-b"></div><div class="rain-line rain-c"></div></div></div>
+<div class="quick-strip"><div><span class="quick-icon">⌂</span><span><b>Roof to tank</b><small>Harvest estimates</small></span></div><div><span class="quick-icon">◷</span><span><b>Before the rain</b><small>Scenario planner</small></span></div><div><span class="quick-icon">▥</span><span><b>Ward priorities</b><small>Urban insights</small></span></div><div><span class="quick-icon">✦</span><span><b>Ask AquaSense</b><small>Context-aware AI</small></span></div></div>
+<div class="card c home-intro"><h2>One workspace. Clearer water decisions.</h2>
+<p>Use the calculator to estimate collection and storage, then explore the dashboard, rainfall planner and urban scenarios. Every estimate is labelled, and sample data is kept distinct from measured readings.</p>
+<a class="btn" href="#calculator">Start with your roof</a><a class="btn alt" href="#ai">Ask the AI assistant</a></div>
+<div class="card"><h3>What this tool covers</h3><ul>
+<li>Harvesting potential from rainfall, roof area and runoff</li>
+<li>Storage capacity versus estimated collection, with overflow losses</li>
+<li>Demand, conservation insights and reuse advice</li>
+<li>Dashboard of collection and potential savings</li>
+<li>Estimated results kept separate from measured readings</li>
+<li>Water quality and safe storage checks</li>
+<li>Urban water management: ward and city scale-up, storm flood relief, groundwater recharge and priority wards</li>
+<li>Every assumption listed on the Assumptions page</li></ul></div></section>
+
+<section id="calculator"><div class="card"><h2>Rainwater Calculator</h2>
+<p class="note">Type your own values, then press Calculate at the bottom. Results do not change until you press it. Defaults are a sample 200 m² apartment roof in Bengaluru.</p>
+<div class="form">
+<div><label for="area">Roof catchment area (m²)</label><input id="area" type="number" min="0" value="200"></div>
+<div><label for="rc">Roof type (runoff coefficient)</label><select id="rc"><option value="0.8">Concrete / RCC (0.80)</option><option value="0.75">Clay tile (0.75)</option><option value="0.9">Metal sheet (0.90)</option><option value="0.6">Thatched / rough (0.60)</option></select></div>
+<div><label for="eff">Gutter and filter efficiency (%)</label><input id="eff" type="number" min="1" max="100" value="90"></div>
+<div><label for="ff">First flush discarded (mm per rain event)</label><input id="ff" type="number" min="0" step="0.5" value="1"></div>
+<div><label for="cap">Tank capacity (litres)</label><input id="cap" type="number" min="0" value="10000"></div>
+<div><label for="ppl">People using the water</label><input id="ppl" type="number" min="1" value="15"></div>
+<div><label for="lp">Non-potable use per person (L/day)</label><input id="lp" type="number" min="1" value="40"></div>
+<div><label for="rate">Cost of tanker or municipal water (₹ per 1000 L)</label><input id="rate" type="number" min="0" value="100"></div></div>
+<h3>Monthly rainfall (mm) <span class="badge">Sample data</span></h3>
+<p class="note">Approximate long-term Bengaluru monthly averages. Replace with your local IMD or rain gauge data.</p>
+<div class="form" id="rain"></div><p class="c"><button class="btn" id="calcBtn" type="button">Calculate</button></p><p id="calcStatus" class="note" role="status" aria-live="polite"></p></div>
+<div class="card"><h3>Where the water goes in a year <span class="badge">Estimated</span></h3><div class="scroll"><table id="wf"></table></div></div>
+<div class="card"><h3>Is the tank big enough? <span class="badge">Estimated</span></h3>
+<p class="note">Same roof, same demand, different tank sizes. Bigger tanks help less and less.</p><div class="scroll"><table id="opt"></table></div><p id="optn"></p></div></section>
+
+<section id="dashboard"><div class="card"><h2>Dashboard</h2>
+<p class="note">Everything in this block is an estimate from the values you entered and calculated. <span class="badge">Estimated</span></p>
+<p class="c"><button class="btn calc">Refresh results</button></p>
+<div class="stats" id="kpis"></div></div>
+<div class="card"><h3>Water budget: collection, demand and tank level</h3><div class="scroll"><svg id="chart" viewBox="0 0 720 260" role="img" aria-label="Monthly collection, demand and tank level chart"></svg></div>
+<p class="note">Blue bars: collected. Orange line: demand. Green line: tank level at month end.</p>
+<div class="scroll" style="margin-top:10px"><table id="mt"></table></div></div>
+<div class="card"><h3>Measured readings <span class="badge m">Measured</span></h3>
+<p class="note">Only numbers you type from a flow meter or sensor appear here. They are never mixed with the estimates above.</p>
+<div class="form"><div><label for="mm">Month</label><select id="mm"></select></div>
+<div><label for="ml">Measured litres collected that month</label><input id="ml" type="number" min="0" placeholder="e.g. 9000"></div>
+<div><label for="tds">Water TDS (ppm)</label><input id="tds" type="number" min="0" placeholder="e.g. 150"></div>
+<div><label for="tur">Turbidity (NTU)</label><input id="tur" type="number" min="0" step="0.1" placeholder="e.g. 2"></div></div>
+<p class="c"><button class="btn calc">Check measured readings</button></p><div class="box" id="mres"></div>
+<div class="box"><h3>Water quality and safe storage</h3><div id="qual"></div></div></div></section>
+
+<section id="planner"><div class="card"><h2>Smart Rainfall Action Planner</h2>
+<p class="note">Enter an expected rainfall amount and the tank's current fill level. The planner estimates incoming roof runoff and possible overflow using your calculator settings. This is a scenario tool, not a live weather forecast.</p>
+<div class="form">
+<div><label for="prain">Expected rainfall (mm)</label><input id="prain" type="number" min="0" step="0.1" value="40"></div>
+<div><label for="pfill">Current tank fill level (%)</label><input id="pfill" type="number" min="0" max="100" step="1" value="85"></div>
+</div>
+<p class="c"><button class="btn" id="planbtn" type="button">Plan for this rainfall</button></p>
+<div class="stats" id="pkpis"></div>
+<div class="box" id="presult" aria-live="polite"><h3>Your action plan</h3><p>Enter your expected rainfall and current tank level, then press “Plan for this rainfall”.</p></div>
+<div class="box"><h3>How the estimate works</h3><p>Incoming water = roof area × effective rainfall × runoff coefficient × filter efficiency. The first-flush amount is subtracted from the entered rainfall once for this scenario.</p><p class="note">Actual collection can differ due to rainfall intensity, roof condition, gutter losses, and the timing of rain. Check that any overflow/recharge outlet is safe and clear.</p></div>
+</div></section>
+
+<section id="urban"><div class="card"><h2>Urban Water Management</h2>
+<p class="note">Scales the single-roof result up to a ward or city. It uses the roof, tank and demand values from the Calculator. <span class="badge">Estimated</span></p>
+<div class="form">
+<div><label for="nb">Buildings in the area</label><input id="nb" type="number" min="0" value="500"></div>
+<div><label for="ad">Buildings that adopt harvesting (%)</label><input id="ad" type="number" min="0" max="100" value="30"></div>
+<div><label for="st">Design storm (mm in one hour)</label><input id="st" type="number" min="0" value="40"></div>
+<div><label for="te">Tank empty when storm starts (%)</label><input id="te" type="number" min="0" max="100" value="50"></div>
+<div><label for="rch">Overflow sent to recharge pits (%)</label><input id="rch" type="number" min="0" max="100" value="50"></div>
+<div><label for="dc">Demand cut from conservation (%)</label><input id="dc" type="number" min="0" max="90" value="15"></div></div>
+<p class="c"><button class="btn calc">Calculate urban results</button></p><div class="stats" id="ukp"></div></div>
+<div class="card"><h3>Water balance for the area</h3><div id="ubal"></div></div>
+<div class="card"><h3>Flood relief in a heavy storm</h3><div id="uflood"></div></div>
+<div class="card"><h3>Which wards should start first? <span class="badge">Sample data</span></h3>
+<p class="note">Type your own ward data (leave Buildings at 0 to skip a row), then press Calculate urban results. The starting rows are made-up sample data.</p>
+<div class="scroll"><table id="wedit"></table></div>
+<h3>Priority order</h3><div class="scroll"><table id="uward"></table></div></div>
+<div class="card"><h3>Urban recommendations</h3><div id="urec"></div></div></section>
+
+<section id="recommendations"><div class="card"><h2>Recommendations</h2><p class="note">Generated from your inputs. Estimates only.</p><div id="recs"></div></div></section>
+
+<section id="ai"><div class="card"><h2>AquaSense AI Assistant</h2>
+<p>Ask in your own words. The connected AI can explain concepts step by step and use recent messages to understand follow-up questions.</p>
+<div class="maplinks" aria-label="Suggested questions">
+<button class="btn alt ask-sample" type="button" data-q="Explain how rainwater harvesting works step by step">How does it work?</button>
+<button class="btn alt ask-sample" type="button" data-q="How is the rainwater collection calculated? Give an example">Explain the formula</button>
+<button class="btn alt ask-sample" type="button" data-q="Use my current calculator values to explain how much rainwater I can collect and give me three practical next steps.">Interpret my results</button>
+<button class="btn alt ask-sample" type="button" data-q="How can I keep harvested rainwater safe?">Water safety</button>
+</div>
+<div class="chatlog" id="chatlog" role="log" aria-live="polite"><div class="chatmsg bot">Hello! I’m AquaSense AI. Ask me about rainwater harvesting or any other question. I can explain step by step and remember the recent messages in this chat while the page is open.</div></div>
+<div class="form"><div><label for="chatInput">Your question</label><input id="chatInput" placeholder="e.g. What is first flush and why is it needed?" maxlength="1000"></div></div>
+<p><button class="btn" type="button" id="chatSend">Ask assistant</button> <button class="btn alt" type="button" id="chatClear">Clear chat</button></p>
+<p class="tiny">Connected AI mode: responses come from an AI model through the Python backend. Your API key stays on the server, not in this HTML file. AI answers can be wrong; verify important engineering, health, and safety decisions.</p></div></section>
+
+<section id="locations"><div class="card"><h2>Find Local Rainwater Services</h2><p>This tool opens map searches for your chosen area. You can search separately for installers, recharge-pit contractors, plumbers, and water-testing labs.</p>
+<div class="form"><div><label for="locInput">Town, area, or PIN code</label><input id="locInput" placeholder="e.g. Ullal, Mangaluru" maxlength="120"></div><div><label for="locCategory">Service you need</label><select id="locCategory"><option value="rainwater harvesting installation">Rainwater harvesting installer</option><option value="rainwater recharge pit contractor">Recharge pit contractor</option><option value="rainwater harvesting plumber">Rainwater system plumber</option><option value="water testing laboratory">Water-testing laboratory</option><option value="rainwater harvesting supplies">Filters and tank supplies</option><option value="rainwater harvesting consultant">Rainwater harvesting consultant</option></select></div></div>
+<p><button class="btn" type="button" id="locSearch">Search this service</button> <button class="btn alt" type="button" id="locAll">Show all service searches</button> <button class="btn alt" type="button" id="locMe">Use my current location</button></p>
+<p id="locStatus" class="note" aria-live="polite">Location is optional. You can type an area instead. The browser asks permission before using your location.</p>
+<div id="locResults" class="box" aria-live="polite"><p>Enter an area and choose a service to create map search links.</p></div>
+<p class="tiny">These are live map searches, not verified recommendations. Check provider reviews, qualifications, prices, and local permissions before hiring anyone.</p></div></section>
+
+<section id="assumptions"><div class="card"><h2>Assumptions and method</h2><div id="assume"></div><div id="uassume"></div></div></section>
+</main>
+<a class="btn floating-help" href="#ai" aria-label="Open AI assistant">Ask AI</a>
+<footer>AquaSense AI | Hackathon Project (PS-12)</footer>
+<script>
+function $(i){return document.getElementById(i)}
+var M=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],D=[31,28,31,30,31,30,31,31,30,31,30,31],R0=[2,5,9,46,107,80,110,137,195,163,60,15];
+function fmt(n){return Math.round(n).toLocaleString("en-IN")}
+function v(i){return parseFloat($(i).value)||0}
+$("rain").innerHTML=M.map(function(m,i){return'<div><label for="r'+i+'">'+m+'</label><input id="r'+i+'" type="number" min="0" value="'+R0[i]+'"></div>'}).join("");
+$("mm").innerHTML=M.map(function(m,i){return'<option value="'+i+'">'+m+'</option>'}).join("");
+var WD=[["Ward A",800,150,4,2],["Ward B",450,300,2,4],["Ward C",1200,120,5,5],["Ward D",300,500,3,3],["Ward E",650,200,1,4],["",0,150,3,3]];
+$("wedit").innerHTML='<tr><th>Ward name</th><th>Buildings</th><th>Avg roof m²</th><th>Flood risk (1-5)</th><th>Water stress (1-5)</th></tr>'+WD.map(function(w,i){return'<tr><td><input id="wn'+i+'" value="'+w[0]+'" style="min-width:110px" aria-label="Ward name"></td><td><input id="wb'+i+'" type="number" min="0" value="'+w[1]+'" style="min-width:90px" aria-label="Buildings"></td><td><input id="wr'+i+'" type="number" min="0" value="'+w[2]+'" style="min-width:90px" aria-label="Average roof area"></td><td><input id="wf'+i+'" type="number" min="1" max="5" value="'+w[3]+'" style="min-width:70px" aria-label="Flood risk"></td><td><input id="ws'+i+'" type="number" min="1" max="5" value="'+w[4]+'" style="min-width:70px" aria-label="Water stress"></td></tr>'}).join("");
+function show(){var h=(location.hash||"#home").slice(1);if(!$(h))h="home";
+ document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===h)});
+ document.querySelectorAll("#nav a").forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+h)})}
+window.addEventListener("hashchange",show);show();
+
+function inputs(){return{area:v("area"),coef:+$("rc").value,eff:v("eff")/100,ff:v("ff"),cap:v("cap"),ppl:v("ppl"),lp:v("lp"),rate:v("rate")/1000,rain:M.map(function(m,i){return v("r"+i)})}}
+function sim(p,cap,df){df=df||1;
+ var m=p.rain.map(function(r,i){var ev=r>0?Math.max(1,Math.round(r/10)):0,ff=Math.min(r,ev*p.ff),af=p.area*(r-ff),ar=af*p.coef,c=ar*p.eff;
+  return{r:r,raw:p.area*r,ffL:p.area*ff,roL:af-ar,fiL:ar-c,c:c,d:p.ppl*p.lp*D[i]*df,s:0,o:0,t:0}});
+ var t=0;
+ for(var y=0;y<3;y++)m.forEach(function(x){var s=0,o=0;for(var k=0;k<4;k++){var av=t+x.c/4,u=Math.min(x.d/4,av),rem=av-u,ov=Math.max(0,rem-cap);t=rem-ov;s+=u;o+=ov}if(y==2){x.s=s;x.o=o;x.t=t}});
+ var T=function(k){return m.reduce(function(a,x){return a+x[k]},0)};
+ return{m:m,raw:T("raw"),ffL:T("ffL"),roL:T("roL"),fiL:T("fiL"),c:T("c"),d:T("d"),s:T("s"),o:T("o")}}
+function names(a){return a.length?a.join(", "):"none"}
+
+function update(){
+ var p=inputs(),S=sim(p,p.cap),ext=S.d-S.s,pct=S.d?S.s/S.d*100:0;
+ var W=[["Rain falling on the roof",S.raw,"area × rainfall (1 mm on 1 m² = 1 litre)"],["Less: first flush discarded",-S.ffL,p.ff+" mm of every rain event is thrown away to keep dirt out"],["Less: runoff loss",-S.roL,"roof coefficient "+p.coef],["Less: gutter and filter loss",-S.fiL,"efficiency "+Math.round(p.eff*100)+"%"],["Water collected (potential)",S.c,"before the storage limit"],["Less: overflow when tank is full",-S.o,"tank limit "+fmt(p.cap)+" L"],["Water used from tank",S.s,"meets non-potable demand"]];
+ $("wf").innerHTML='<tr><th>Step</th><th>Litres per year</th><th>Basis</th></tr>'+W.map(function(r,i){return'<tr'+(i==4||i==6?' class="tot"':'')+'><td>'+r[0]+'</td><td>'+fmt(r[1])+'</td><td class="wr">'+r[2]+'</td></tr>'}).join("");
+ var K=[[fmt(S.c)+" L","Collected per year"],[fmt(S.s)+" L","Used from tank"],[pct.toFixed(0)+"%","Demand met by rain"],[fmt(ext)+" L","Outside water still needed"],[fmt(S.o)+" L","Lost to overflow"],["₹"+fmt(S.s*p.rate),"Potential savings per year"]];
+ $("kpis").innerHTML=K.map(function(k){return'<div class="stat"><b>'+k[0]+'</b><span>'+k[1]+'</span></div>'}).join("");
+ // chart
+ var Wd=720,H=260,L=52,B=28,T=12,mx=Math.max.apply(null,S.m.map(function(x){return Math.max(x.c,x.d,x.t)}))||1,pw=(Wd-L-8)/12,ph=H-B-T;
+ function Y(val){return T+ph-val/mx*ph}
+ var g='',dl='',tl='';
+ [0,.5,1].forEach(function(f){g+='<line x1="'+L+'" x2="'+(Wd-8)+'" y1="'+Y(mx*f)+'" y2="'+Y(mx*f)+'" stroke="var(--line)"/><text x="'+(L-6)+'" y="'+(Y(mx*f)+4)+'" font-size="11" text-anchor="end" fill="var(--mut)">'+fmt(mx*f/1000)+'k</text>'});
+ S.m.forEach(function(x,i){var cx=L+i*pw+pw/2;
+  g+='<rect x="'+(cx-pw*.3)+'" y="'+Y(x.c)+'" width="'+pw*.6+'" height="'+(T+ph-Y(x.c))+'" fill="var(--pri)" opacity=".75"/><text x="'+cx+'" y="'+(H-10)+'" font-size="11" text-anchor="middle" fill="var(--mut)">'+M[i]+'</text>';
+  dl+=cx+','+Y(x.d)+' ';tl+=cx+','+Y(x.t)+' '});
+ $("chart").innerHTML=g+'<polyline points="'+dl+'" fill="none" stroke="var(--warn)" stroke-width="3"/><polyline points="'+tl+'" fill="none" stroke="var(--ok)" stroke-width="3"/>';
+ $("mt").innerHTML='<tr><th>Month</th><th>Rain mm</th><th>Collected L</th><th>Demand L</th><th>From tank L</th><th>Outside water L</th><th>Overflow L</th><th>Tank end L</th></tr>'+S.m.map(function(x,i){return'<tr><td>'+M[i]+'</td><td>'+x.r+'</td><td>'+fmt(x.c)+'</td><td>'+fmt(x.d)+'</td><td>'+fmt(x.s)+'</td><td>'+fmt(x.d-x.s)+'</td><td>'+fmt(x.o)+'</td><td>'+fmt(x.t)+'</td></tr>'}).join("");
+ // tank optimiser
+ var sizes=[1000,2000,5000,10000,20000,50000,100000];if(sizes.indexOf(p.cap)<0&&p.cap>0)sizes.push(p.cap);sizes.sort(function(a,b){return a-b});
+ var best=sim(p,1e12).s,rec=null,prev=0,rows='';
+ var res=sizes.map(function(z){return{z:z,s:sim(p,z).s}});
+ res.some(function(r){if(r.s>=0.9*best){rec=r.z;return true}});
+ res.forEach(function(r){var gain=r.s-prev;prev=r.s;rows+='<tr'+(r.z===p.cap?' class="hl"':'')+'><td>'+fmt(r.z)+' L'+(r.z===p.cap?' (yours)':'')+(r.z===rec?' ★':'')+'</td><td>'+fmt(r.s)+'</td><td>'+(S.d?(r.s/S.d*100).toFixed(0):0)+'%</td><td>+'+fmt(gain)+'</td></tr>'});
+ $("opt").innerHTML='<tr><th>Tank size</th><th>Used per year L</th><th>Demand met</th><th>Extra vs previous L</th></tr>'+rows;
+ $("optn").textContent=rec?"★ Smallest size that captures about 90% of the best possible use: "+fmt(rec)+" L. "+(p.cap>=rec?"Your tank is at or above this.":"Your tank is smaller, so you are leaving usable water on the table."):"Even a very large tank does not reach 90% with these inputs.";
+ // measured
+ var i=+$("mm").value,e=S.m[i].c,ml=$("ml").value;
+ if(ml==="")$("mres").innerHTML='Estimated for '+M[i]+': <b>'+fmt(e)+' L</b>. Type a meter reading above to compare.';
+ else{var mv=parseFloat(ml)||0,dv=e?(mv-e)/e*100:0;$("mres").innerHTML='Estimated '+fmt(e)+' L. Measured <b>'+fmt(mv)+' L</b>. Difference '+(dv>=0?"+":"")+dv.toFixed(0)+'%. Value of the measured litres if all were used: <b>₹'+fmt(mv*p.rate)+'</b> (measured litres × your water rate).'}
+ var td=$("tds").value,tu=$("tur").value,bad=(parseFloat(td)||0)>500||(parseFloat(tu)||0)>5,days=p.ppl*p.lp?p.cap/(p.ppl*p.lp):0,q='';
+ if(td===""&&tu==="")q+='<p>Enter TDS and turbidity to check the water.</p>';
+ else q+='<p>'+(bad?'<span class="tag n">Poor quality: divert or treat first</span>':'<span class="tag y">Acceptable for non-potable reuse</span>')+'</p><p>'+['Gardening',bad?0:1,'Toilet flushing',bad?0:1,'Washing floors and vehicles',bad?0:1,'Drinking',0].reduce(function(a,x,k,arr){return k%2?a:a+'<span class="tag '+(arr[k+1]?'y':'n')+'">'+(arr[k+1]?'✓ ':'✗ ')+x+'</span>'},'')+'</p>';
+ q+='<p>Your tank holds about <b>'+days.toFixed(1)+' days</b> of demand.'+(days>30?' Water may stay in the tank for weeks. Use it regularly and consider disinfection.':' Turnover is healthy.')+'</p><ul><li>Keep the tank covered, dark and fitted with insect mesh.</li><li>Fit a first-flush diverter and clean gutters before the rains.</li><li>Clean the tank and filters at least once a year.</li><li>Never drink it without filtration, disinfection and a lab test.</li></ul>';
+ $("qual").innerHTML=q;
+ // recommendations
+ var top=S.m.map(function(x,k){return[x.c,k]}).sort(function(a,b){return b[0]-a[0]}).slice(0,3).map(function(a){return M[a[1]]}),
+ dry=[],ov=[];S.m.forEach(function(x,k){if(x.d-x.s>1)dry.push(M[k]);if(x.o>1)ov.push(M[k])});
+ var S2=sim(p,p.cap,0.8),cut=(S.d-S.s)-(S2.d-S2.s);
+ var R=[["When to collect","Most water arrives in "+names(top)+". Clean gutters, check filters and open the inlet before these months. Skip the first "+p.ff+" mm of each rain event."],
+ ["When to store","Tank is "+fmt(p.cap)+" L and "+pct.toFixed(0)+"% of demand is met. "+(ov.length?"It overflows in "+names(ov)+", losing "+fmt(S.o)+" L a year. "+(rec&&p.cap<rec?"A tank of about "+fmt(rec)+" L would capture more. ":"")+"Send surplus to a recharge pit or borewell.":"The tank does not overflow with these inputs.")],
+ ["When to conserve",dry.length?"Outside water is needed in "+names(dry)+" ("+fmt(ext)+" L a year, about ₹"+fmt(ext*p.rate)+"). Cutting demand by 20% would reduce that by about "+fmt(cut)+" L (₹"+fmt(cut*p.rate)+"). Fix leaks and shift gardening to the wet months.":"Rain covers demand all year with these inputs."],
+ ["Reuse advice","Use harvested water for toilet flushing, gardening, floor and vehicle washing. Settled and filtered greywater can also be used for flushing or gardens. Do not use it for drinking unless treated and tested."],
+ ["Summary in Kannada","ಈ ಛಾವಣಿಯಿಂದ ವರ್ಷಕ್ಕೆ ಸುಮಾರು "+fmt(S.c)+" ಲೀಟರ್ ಮಳೆನೀರು ಸಂಗ್ರಹಿಸಬಹುದು. ಇದು ಅಂದಾಜು ಮಾತ್ರ."]];
+ $("recs").innerHTML=R.map(function(r){return'<div class="box"><h3>'+r[0]+'</h3><p>'+r[1]+'</p></div>'}).join("");
+ // assumptions
+ $("assume").innerHTML='<div class="box"><h3>Formula</h3><p>Collected = area × (rainfall − first flush) × runoff coefficient × filter efficiency. 1 mm of rain on 1 m² gives 1 litre.</p></div>'+
+ '<div class="box"><h3>Your current assumptions</h3><ul><li>Roof area '+p.area+' m², runoff coefficient '+p.coef+', filter efficiency '+Math.round(p.eff*100)+'%</li><li>First flush: '+p.ff+' mm discarded per rain event</li><li>Rain events per month are assumed as one per 10 mm of rain, at least one in any month with rain</li><li>Tank capacity '+fmt(p.cap)+' L, empty at the start, simulated for 3 years with the last year shown</li><li>Demand: '+p.ppl+' people × '+p.lp+' L/day of non-potable use</li><li>Water price ₹'+(p.rate*1000)+' per 1000 L (enter your own)</li></ul></div>'+
+ '<div class="box"><h3>Data and limits</h3><ul><li>Monthly rainfall is sample data (approximate long-term Bengaluru averages). Real rain is bursty, so actual overflow can be higher than shown.</li><li>The model works in weekly steps inside each month and does not use daily rainfall.</li><li>Savings are estimates from litres used from the tank × your water price. They are not measured results.</li><li>Measured values exist only where you type them (the Measured readings panel).</li></ul></div>'+
+ '<div class="box"><h3>Water quality screening</h3><p>TDS above 500 ppm or turbidity above 5 NTU is flagged as poor for non-potable reuse. These are simple screening values, not a drinking water standard. Drinking use needs treatment and lab testing.</p></div>'}
+function ml(x){return(x/1e6).toFixed(1)+" ML"}
+function rs(x){return"₹"+(x>=1e7?(x/1e7).toFixed(2)+" crore":x>=1e5?(x/1e5).toFixed(1)+" lakh":fmt(x))}
+function urban(){
+ var p=inputs(),S=sim(p,p.cap),ad=v("ad"),n=v("nb")*ad/100,st=v("st"),tep=v("te"),rcp=v("rch"),dcp=v("dc");
+ var ext=S.d-S.s,S3=sim(p,p.cap,1-dcp/100),ext3=S3.d-S3.s,run=p.area*st*p.coef,held=Math.min(run,p.cap*tep/100);
+ var kp=[[fmt(n),"Buildings harvesting"],[ml(n*S.c),"Rain collected per year"],[ml(n*S.s),"Outside water avoided per year"],[rs(n*S.s*p.rate),"Potential savings per year"],[ml(n*S.o*rcp/100),"Recharged to groundwater per year"]];
+ $("ukp").innerHTML=kp.map(function(k){return'<div class="stat"><b>'+k[0]+'</b><span>'+k[1]+'</span></div>'}).join("");
+ var dem=n*S.d,cov=dem?n*S.s/dem*100:0;
+ $("ubal").innerHTML='<p>Demand of the harvesting buildings: <b>'+ml(dem)+'</b> a year. Rain covers <b>'+cov.toFixed(0)+'%</b>. Outside water still needed: <b>'+ml(n*ext)+'</b>.</p><div class="ubar" aria-hidden="true"><i style="width:'+cov+'%"></i></div><p class="note">Blue: rainwater used. Orange: outside water (tanker or municipal).</p><p>With a '+dcp+'% conservation cut, outside water falls to <b>'+ml(n*ext3)+'</b>, an extra saving of <b>'+ml(n*(ext-ext3))+'</b> ('+rs(n*(ext-ext3)*p.rate)+').</p>';
+ $("uflood").innerHTML='<p>In a <b>'+st+' mm</b> storm, one roof sends about <b>'+fmt(run)+' L</b> towards the drains. A tank that is '+tep+'% empty absorbs <b>'+fmt(held)+' L</b>.</p><p>Across '+fmt(n)+' buildings, <b>'+ml(n*held)+'</b> is kept out of the drains (<b>'+(run?held/run*100:0).toFixed(0)+'%</b> of roof runoff). About '+ml(n*(run-held))+' still reaches the drains.</p><p class="note">This is why the tank is released before forecast heavy rain. Roads and pavements are not counted.</p>';
+ var Wd=[0,1,2,3,4,5].map(function(i){return[$("wn"+i).value||("Ward "+(i+1)),v("wb"+i),v("wr"+i),Math.min(5,Math.max(1,v("wf"+i)||1)),Math.min(5,Math.max(1,v("ws"+i)||1))]}).filter(function(w){return w[1]>0}).map(function(w){return{n:w[0],b:w[1],r:w[2],f:w[3],s:w[4],sc:(w[3]+w[4])/2,pot:w[1]*ad/100*(p.area?w[2]/p.area*S.c:0)}}).sort(function(a,b){return b.sc-a.sc||b.pot-a.pot});
+ $("uward").innerHTML='<tr><th>Rank</th><th>Ward</th><th>Buildings</th><th>Avg roof m²</th><th>Flood risk (1-5)</th><th>Water stress (1-5)</th><th>Potential per year</th><th>Priority</th></tr>'+Wd.map(function(w,i){return'<tr><td>'+(i+1)+'</td><td>'+w.n+'</td><td>'+fmt(w.b)+'</td><td>'+w.r+'</td><td>'+w.f+'</td><td>'+w.s+'</td><td>'+ml(w.pot)+'</td><td>'+(w.sc>=4?"Install first":w.sc>=3?"Phase 2":"Phase 3")+'</td></tr>'}).join("");
+ var R=[["Scale up","If "+fmt(n)+" buildings harvest, about "+ml(n*S.s)+" a year of tanker or municipal water is avoided, worth "+rs(n*S.s*p.rate)+"."],
+ ["Flood relief","Tanks hold back about "+(run?held/run*100:0).toFixed(0)+"% of roof runoff in a "+st+" mm storm. Keep tanks at least "+tep+"% empty before forecast storms."],
+ ["Groundwater","Tank overflow of "+ml(n*S.o)+" a year can feed recharge pits. At "+rcp+"% that recharges about "+ml(n*S.o*rcp/100)+"."],
+ ["Where to start",(Wd.length?"Begin with "+Wd[0].n+" (flood risk "+Wd[0].f+", water stress "+Wd[0].s+"), then follow the table order.":"Enter ward data to get a starting order.")],
+ ["City actions","Make harvesting part of building approvals for large roofs, share tank sensor readings with a city control room, and use tank levels before storms to avoid overloading drains."]];
+ $("urec").innerHTML=R.map(function(r){return'<div class="box"><h3>'+r[0]+'</h3><p>'+r[1]+'</p></div>'}).join("");
+ $("uassume").innerHTML='<div class="box"><h3>Urban assumptions</h3><ul><li>Every adopting building is identical to the one in the Calculator (same roof, tank and demand).</li><li>Storm runoff per roof = area × storm mm × runoff coefficient, with no first-flush deduction.</li><li>Tank free space at storm time is the share you enter ('+tep+'%).</li><li>'+rcp+'% of tank overflow is sent to recharge pits.</li><li>Ward data is made-up sample data. Roads, pavements and drain networks are not modelled.</li><li>Priority score is the average of flood risk and water stress (1 to 5).</li></ul></div>'}
+var _u=update;update=function(){_u();urban()};
+function calculateSafely(){
+ try {
+  update();
+  $("calcStatus").textContent="Calculation updated successfully. Your results are shown below.";
+  $("calcStatus").style.color="var(--ok)";
+ } catch(err) {
+  console.error("Rainwater calculator error:", err);
+  $("calcStatus").textContent="The calculator encountered an error. Please check that all fields contain valid numbers, then try again. Details: "+(err && err.message ? err.message : "unknown error");
+  $("calcStatus").style.color="var(--bad)";
+ }
+}
+$("calcBtn").addEventListener("click", calculateSafely);
+document.querySelectorAll(".calc").forEach(function(b){b.addEventListener("click",function(){try{update()}catch(err){console.error(err)}})});
+document.querySelectorAll("input").forEach(function(e){e.addEventListener("keydown",function(ev){if(ev.key==="Enter")update()})});
+function planRain(){
+ var p=inputs(), rain=Math.max(0,v("prain")), fill=Math.min(100,Math.max(0,v("pfill"))), current=p.cap*fill/100, free=Math.max(0,p.cap-current);
+ var effective=Math.max(0,rain-p.ff), incoming=p.area*effective*p.coef*p.eff, overflow=Math.max(0,incoming-free), stored=Math.min(p.cap,current+incoming), projected=p.cap>0?stored/p.cap*100:0;
+ var K=[[fmt(incoming)+" L","Estimated incoming water"],[fmt(free)+" L","Free tank capacity now"],[fmt(overflow)+" L","Potential overflow"],[projected.toFixed(0)+"%","Projected tank level"]];
+ $("pkpis").innerHTML=K.map(function(k){return'<div class="stat"><b>'+k[0]+'</b><span>'+k[1]+'</span></div>'}).join("");
+ var msg="";
+ if(p.cap<=0){msg="Enter a tank capacity greater than zero in the Rainwater Calculator, then run the planner again."}
+ else if(rain===0){msg="No rainfall entered. There is no forecast incoming water in this scenario. Check the tank and use stored water as needed."}
+ else if(overflow>0){msg="<span class=\"tag n\">Overflow may occur in this scenario</span><p>Estimated incoming water is greater than the tank's free space by "+fmt(overflow)+" L. If practical, use some stored water before the rain and make sure the overflow outlet or recharge system is clear and safe.</p>"}
+ else if(free<incoming*0.2){msg="<span class=\"tag y\">Tank may nearly fill</span><p>The tank can hold the estimated incoming water, but little free space may remain. Check the overflow route before the rain.</p>"}
+ else {msg="<span class=\"tag y\">Tank has enough estimated space</span><p>The tank can accommodate the estimated incoming water in this scenario. Keep the inlet, filter, and overflow route clear.</p>"}
+ $("presult").innerHTML='<h3>Your action plan</h3>'+msg+'<p class="note">Calculation uses '+p.area+' m² roof area, runoff coefficient '+p.coef+', filter efficiency '+Math.round(p.eff*100)+'%, and '+p.ff+' mm first flush.</p>';
+}
+$("planbtn").addEventListener("click",planRain);
+["prain","pfill"].forEach(function(id){$(id).addEventListener("keydown",function(ev){if(ev.key==="Enter")planRain()})});
+// Real AI chat: requests go to the Python backend. The API key is never placed in this file.
+// Send current calculator/planner/urban inputs so the assistant can explain this run, not give generic answers.
+var chatHistory=[];
+function getProjectContext(){
+ return {
+  calculator:{roofAreaM2:$('area').value,roofType:$('rc').selectedOptions[0].text,filterEfficiencyPercent:$('eff').value,firstFlushMm:$('ff').value,tankCapacityLitres:$('cap').value,people:$('ppl').value,nonPotableLitresPerPersonPerDay:$('lp').value,waterCostPer1000L:$('rate').value,monthlyRainfallMm:M.map(function(m,i){return {month:m,rainfallMm:$('r'+i).value};})},
+  dashboardSummary:$('kpis').innerText.slice(0,1600),
+  planner:{expectedRainfallMm:$('prain').value,currentTankFillPercent:$('pfill').value},
+  urban:{buildings:$('nb').value,adoptionPercent:$('ad').value,designStormMmPerHour:$('st').value,tankEmptyAtStormStartPercent:$('te').value,rechargeSharePercent:$('rch').value,demandReductionPercent:$('dc').value},
+  dataNote:'Rainfall and ward examples are sample inputs unless the user replaces them. The website has no live weather feed or physical sensors.'
+ };
+}
+function addChat(text,who){var d=document.createElement("div");d.className="chatmsg "+who;d.textContent=text;$("chatlog").appendChild(d);$("chatlog").scrollTop=$("chatlog").scrollHeight;return d;}
+async function sendChat(){
+ var q=$("chatInput").value.trim();if(!q)return;
+ addChat(q,"user");$("chatInput").value="";$("chatInput").focus();
+ var pending=addChat("Thinking…","bot");$("chatSend").disabled=true;
+ try{
+  var response=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q,history:chatHistory.slice(-10),context:getProjectContext()})});
+  var data=await response.json();
+  if(!response.ok)throw new Error(data.error||"The AI service returned an error.");
+  pending.textContent=data.reply||"I couldn't generate a reply. Please try again.";
+  chatHistory.push({role:"user",content:q},{role:"assistant",content:pending.textContent});
+  chatHistory=chatHistory.slice(-12);
+ }catch(err){pending.textContent="I couldn't reach the AI backend. Make sure you started the Python server and added a valid API key in the .env file. Details: "+err.message;}
+ finally{$("chatSend").disabled=false;$("chatInput").focus();}
+}
+$("chatSend").addEventListener("click",sendChat);$("chatInput").addEventListener("keydown",function(e){if(e.key==="Enter")sendChat()});$("chatClear").addEventListener("click",function(){$("chatlog").innerHTML="";chatHistory=[];addChat("Chat cleared. Ask a new question whenever you’re ready.","bot")});
+document.querySelectorAll(".ask-sample").forEach(function(b){b.addEventListener("click",function(){$("chatInput").value=b.getAttribute("data-q");sendChat();});});
+function esc(s){return s.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function serviceLinks(query,all){var cats=all?["rainwater harvesting installation","rainwater recharge pit contractor","rainwater harvesting plumber","water testing laboratory","rainwater harvesting supplies","rainwater harvesting consultant"]:[$("locCategory").value];return '<p>Map searches for <b>'+esc(query)+'</b>:</p><div class="maplinks">'+cats.map(function(c){var url='https://www.google.com/maps/search/'+encodeURIComponent(c+' near '+query);return '<a target="_blank" rel="noopener noreferrer" href="'+url+'">'+esc(c)+'</a>';}).join('')+'</div>';}
+function runLocationSearch(all){var q=$("locInput").value.trim();if(!q){$("locStatus").textContent="Please enter a town, area, or PIN code, or use current location.";return;}$("locStatus").textContent="Map search links are ready for "+q+". Select a link to open the map.";$("locResults").innerHTML=serviceLinks(q,all);}
+$("locSearch").addEventListener("click",function(){runLocationSearch(false);});$("locAll").addEventListener("click",function(){runLocationSearch(true);});
+$("locMe").addEventListener("click",function(){if(!navigator.geolocation){$("locStatus").textContent="Your browser does not provide location access. Please type your area instead.";return;}$("locStatus").textContent="Requesting location permission…";navigator.geolocation.getCurrentPosition(function(pos){var q=pos.coords.latitude.toFixed(5)+","+pos.coords.longitude.toFixed(5);$("locInput").value=q;$("locStatus").textContent="Location found. Choose a service category or show all service searches.";$("locResults").innerHTML=serviceLinks(q,false);},function(){ $("locStatus").textContent="Could not get location (permission denied or unavailable). Type your town or PIN code instead.";},{enableHighAccuracy:false,timeout:10000,maximumAge:300000});});
+update();planRain();
+</script></body></html>

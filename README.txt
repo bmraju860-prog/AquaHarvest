@@ -1,5 +1,7 @@
 # AquaSense AI — Real AI Starter (beginner setup)
 
+Live demo: https://aquaharvest-o3s9.onrender.com/
+
 This cleaned-up version keeps the core rainwater calculator, dashboard, Rain Planner, urban management, recommendations, AI Assistant, and separate Locations page. It removes a duplicate urban-calculation button and replaces a troubleshooting-only AI suggestion with “Interpret my results”. The AI chat receives current calculator/planner/urban input values so it can give more project-specific explanations. The AI chat calls the OpenAI Responses API through a Python/Flask backend. The private API key is read from `.env` and is never placed in `index.html`.
 
 ## Before you start
